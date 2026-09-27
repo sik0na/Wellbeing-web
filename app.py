@@ -22,6 +22,11 @@ def checkin():
     emotion = model.predict([text])[0]
     return render_template("result.html", text=text, emotion=emotion, emotions=content.EMOTIONS)
 
+@app.route("/message", methods = ["POST"])
+def message():
+    chosen = request.form["chosen"]
+    emotion = content.EMOTIONS[chosen]
+    return render_template("message.html", emotion=emotion)
 
 if __name__ == "__main__":
     app.run(debug=True, port=5002)

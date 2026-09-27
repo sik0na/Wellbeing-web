@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ emotion["emoji"] }} {{ emotion["name"] }}</h1>
+    <p>{{ emotion["message"] }}</p>
+
+    <a href="/">Check in again</a>
+{% endblock %}

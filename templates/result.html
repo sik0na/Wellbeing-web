@@ -1,7 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Thank you!</h1>
     <p>You wrote: {{text}}</p>
-    <p>DOes "{{ emotions[emotion]["emoji"]}} {{ emotions[emotion]["name"]}}" fit how you feel?</p>
+    <form action="/message" method="post">
+        <p>DOes "{{ emotions[emotion]["emoji"]}} {{ emotions[emotion]["name"]}}" fit how you feel?</p>
+        <button type="submit" name="chosen" value="{{ emotion }}"> Yes, that fits</button>
+        <p>Or choose another:</p>
+        {% for key in emotions %}
+            {% if key != emotion %}
+                <button type="submit" name="chosen" value="{{ key }}">
+                    {{ emotions[key]["emoji"] }} {{ emotions[key]["name"] }}
+                </button>
+            {% endif %}
+        {% endfor %}
+    </form>
+    
 {% endblock %}
