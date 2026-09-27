@@ -1,4 +1,8 @@
 from flask import Flask, render_template, request
+import joblib
+import content
+
+model = joblib.load("emotion_model.joblib")
 
 app = Flask(__name__)
 
@@ -15,7 +19,8 @@ def about():
 @app.route("/checkin", methods = ["POST"])
 def checkin():
     text = request.form["text"]
-    return render_template("result.html", text=text)
+    emotion = model.predict([text])[0]
+    return render_template("result.html", text=text, emotion=emotion, emotions=content.EMOTIONS)
 
 
 if __name__ == "__main__":
