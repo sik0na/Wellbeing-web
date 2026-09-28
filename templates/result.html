@@ -3,7 +3,9 @@
 {% block content %}
     <p>You wrote: {{text}}</p>
     <form action="/message" method="post">
-        <p>DOes "{{ emotions[emotion]["emoji"]}} {{ emotions[emotion]["name"]}}" fit how you feel?</p>
+        <input type="hidden" name = "text" value = "{{ text }}">
+        <input type="hidden" name = "predicted" value = "{{ emotion }}">
+        <p>Does "{{ emotions[emotion]["emoji"]}} {{ emotions[emotion]["name"]}}" fit how you feel?</p>
         <button type="submit" name="chosen" value="{{ emotion }}"> Yes, that fits</button>
         <p>Or choose another:</p>
         {% for key in emotions %}

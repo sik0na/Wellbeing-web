@@ -5,4 +5,10 @@
     <p>{{ emotion["message"] }}</p>
 
     <a href="/">Check in again</a>
+    <form action="/save" method="post">
+        <input type="hidden" name="text" value="{{ text }}">
+        <input type="hidden" name="predicted" value="{{ predicted }}">
+        <input type="hidden" name="chosen" value="{{ chosen }}">
+        <button type="submit">Save this check-in</button>
+    </form>
 {% endblock %}

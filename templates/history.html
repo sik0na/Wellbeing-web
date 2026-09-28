@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Your mood history</h1>
+
+    {% for c in checkins %}
+        <p>
+            {{ c["created_at"] }} ·
+            {{ emotions[c["chosen"]]["emoji"] }} {{ emotions[c["chosen"]]["name"] }}:
+            {{ c["text"] }}
+        </p>
+    {% endfor %}
+{% endblock %}
