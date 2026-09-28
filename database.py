@@ -7,7 +7,7 @@ DB_FILE = "wellbeing.db"
 def get_connection():
     conn = sqlite3.connect(DB_FILE)
     conn.row_factory = sqlite3.Row
-    return conn\
+    return conn
 
 
 def create_tables():
@@ -33,19 +33,19 @@ def create_tables():
     conn.commit()
     conn.close()
 
-def save_checkin(text, predicted, chosen):
+def save_checkin(user_id, text, predicted, chosen):
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     conn = get_connection()
     conn.execute(
         "INSERT INTO checkins (created_at, text, predicted, chosen) VALUES (?, ?, ?, ?)",
-        (now, text, predicted, chosen),
+        (user_id, now, text, predicted, chosen),
     )
     conn.commit()
     conn.close()
 
-def get_all_checkins():
+def get_all_checkins(user_id):
     conn = get_connection()
-    rows = conn.execute("SELECT * FROM checkins ORDER BY id DESC").fetchall()
+    rows = conn.execute("SELECT * FROM checkins ORDER BY id DESC", (user_id,)).fetchall()
     return rows
 
 def create_user(username, password):

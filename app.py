@@ -14,6 +14,8 @@ app.secret_key = "dev-secret-change-me"
 
 @app.route("/")
 def home():
+    if "user_id" not in session:
+        return redirect("/login")
     return render_template("home.html")
 
 
@@ -23,12 +25,16 @@ def about():
 
 @app.route("/checkin", methods = ["POST"])
 def checkin():
+    if "user_id" not in session:
+        return redirect("/login")
     text = request.form["text"]
     emotion = model.predict([text])[0]
     return render_template("result.html", text=text, emotion=emotion, emotions=content.EMOTIONS)
 
 @app.route("/message", methods = ["POST"])
 def message():
+    if "user_id" not in session:
+            return redirect("/login")
     chosen=request.form["chosen"]
     text = request.form["text"]
     predicted = request.form["predicted"]
@@ -37,13 +43,17 @@ def message():
 
 @app.route("/save", methods = ["POST"])
 def save():
-    database.save_checkin(request.form["text"], request.form["predicted"],
+    if "user_id" not in session:
+            return redirect("/login")
+    database.save_checkin(session["user_id"], request.form["predicted"],
                           request.form["chosen"])
     return redirect("/history")
 
 
 @app.route("/history")
 def history():
+    if "user_id" not in session:
+            return redirect("/login")
     return render_template("history.html", checkin=database.get_all_checkins(),
                            emotion=content.EMOTIONS)
 
