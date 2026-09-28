@@ -43,8 +43,6 @@ def save():
 
 @app.route("/history")
 def history():
-    return redirect("/history")
-def history():
     return render_template("history.html", checkin=database.get_all_checkins(),
                            emotion=content.EMOTIONS)
 
