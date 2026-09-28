@@ -45,8 +45,8 @@ def message():
 def save():
     if "user_id" not in session:
             return redirect("/login")
-    database.save_checkin(session["user_id"], request.form["predicted"],
-                          request.form["chosen"])
+    database.save_checkin(session["user_id"], request.form["text"],
+                          request.form["predicted"], request.form["chosen"])
     return redirect("/history")
 
 
@@ -54,8 +54,9 @@ def save():
 def history():
     if "user_id" not in session:
             return redirect("/login")
-    return render_template("history.html", checkin=database.get_all_checkins(),
-                           emotion=content.EMOTIONS)
+    return render_template("history.html",
+                           checkins=database.get_all_checkins(session["user_id"]), emotions=content.EMOTIONS)
+
 
 @app.route("/signup", methods = ["GET", "POST"])
 def signup():
