@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, jsonify
 import joblib
 import content
 import database
@@ -83,6 +83,23 @@ def login():
 def logout():
     session.clear()
     return redirect("/login")
+
+@app.route("/api/history")
+def api_history():
+    if "user_id" not in session:
+          return jsonify({"error": "Please log in."}), 401
+
+    checkins= []
+
+    for row in database.get_all_checkins(session["user_id"]):
+        checkins.append({
+            "id": row["id"],
+            "created_at": row["created_at"],
+            "text": row["text"],
+            "chosen": row["chosen"],
+        })
+    return jsonify({"checkins": checkins})
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5002)

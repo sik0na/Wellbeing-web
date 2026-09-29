@@ -36,3 +36,12 @@ def test_students_only_see_their_own_check_ins(client):
 
     page = client.get("/history").data.decode()
     assert "anna secret" not in page  
+
+def test_api_history(client):
+    assert client.get("/api/history").status_code == 401
+
+    client.post("/signup", data={"username": "anna", "password": "sunflower123"})
+    client.post("/save", data={"text": "exam tomorrow", "predicted": "worried", "chosen": "worried"})
+
+    data = client.get("/api/history").get_json()
+    assert data["checkins"][0]["text"] == "exam tomorrow"

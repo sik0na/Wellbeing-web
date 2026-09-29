@@ -31,7 +31,7 @@ def create_tables():
     conn.commit()
     conn.close()
 
-def save_checkins(user_id, text, predicted, chosen):
+def save_checkin(user_id, text, predicted, chosen):
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     conn = get_connection()
     conn.execute(
