@@ -127,7 +127,36 @@ def api_save():
        return jsonify({"error": "Please log in."}), 401
     data = request.get_json()
     database.save_checkin(session["user_id"], data["text"], data["predicted"], data["chosen"])
-    return jsonify({"ok": True})   
+    return jsonify({"ok": True})  
+
+@app.route("/api/signup", methods=["post"])
+def api_signup():
+    data = request.get_json()
+    user_id=database.create_user(data["username"], data["password"])
+    if user_id is None:
+        return jsonify({"error": "That username is already taken."}), 400
+    session["user_id"] = user_id
+    return jsonify({"username": data["username"]})
+
+@app.route("/api/login", methods = ["Post"])
+def api_login():
+    data = request.get_json()
+    user = database.check_login(data["username"], data["password"])
+    if user is None:
+        return jsonify({"error": "Wrong username or password"}), 401
+    session["user_id"] = user["id"]
+    return jsonify({"username": user["username"]})
+
+@app.route("/api/logout", methods= ["post"])
+def api_logout():
+    session.clear() 
+    return jsonify({"ok": True})
+
+@app.route("/api/me")
+def api_me():
+    if "user_id" not in session:
+        return jsonify({"logged_in": False})
+    return jsonify({"logged_in": True})
 
 if __name__ == "__main__":
     app.run(debug=True, port=5002)

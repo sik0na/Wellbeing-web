@@ -61,3 +61,22 @@ def test_api_checkin_flow(client):
 
     data = client.get("/api/history").get_json()
     assert len(data["checkins"]) == 1
+
+def test_api_login(client):
+    response = client.get("/api/me")
+    assert response.get_json()["logged_in"] == False
+    client.post("/api/signup", json={"username": "anna", "password":"sunflower123"})
+
+    response = client.get("/api/me")
+    assert response.get_json()["logged_in"] == True
+
+    client.post("/api/logout")
+    response = client.get("/api/me")
+    assert response.get_json()["logged_in"] == False
+
+    response= client.post("/api/login", json={"username":"anna", "password":"sunflo3"})
+    assert response.status_code == 401
+
+    response = client.post("/api/login", json = {"username":"anna", "password":"sunflower123"})
+    assert response.status_code==200
+
