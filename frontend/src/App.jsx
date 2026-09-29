@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import CheckIn from "./CheckIn.jsx"
+
 
 function App(){
   const [loggedIn, setLoggedIn] = useState(null)
@@ -49,7 +51,8 @@ function App(){
   return (
     <div>
       <h1>How are you today?</h1>
-      <p>{loggedIn? "You are logged in" : "You are not logged in"}</p>
+      <CheckIn/>
+      <button onClick={logout}>Log out</button>
     </div>
   )
 }
