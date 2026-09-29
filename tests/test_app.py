@@ -45,3 +45,19 @@ def test_api_history(client):
 
     data = client.get("/api/history").get_json()
     assert data["checkins"][0]["text"] == "exam tomorrow"
+
+def test_api_checkin_flow(client):
+    assert client.get("/api/history").status_code == 401
+
+    client.post("/signup", data={"username": "anna", "password": "sunflower123"})
+
+    response = client.post("/api/checkin", json={"text": "I'm so worried about my exam tomorrow"})
+    assert response.get_json()["emotion"] == "worried"
+
+    response = client.post("/api/message", json={"chosen": "worried"})
+    assert "worried" in response.get_json()["message"]
+
+    client.post("/api/save", json={"text": "I'm so worried about my exam tomorrow","predicted": "worried", "chosen": "worried"})
+
+    data = client.get("/api/history").get_json()
+    assert len(data["checkins"]) == 1

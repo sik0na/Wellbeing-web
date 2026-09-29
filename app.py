@@ -101,5 +101,33 @@ def api_history():
     return jsonify({"checkins": checkins})
 
 
+@app.route("/api/checkin", methods=["Post"])
+def api_checkin():
+    if "user_id" not in session:
+        return jsonify({"error": "Please log in."}), 401
+    data = request.get_json()
+    text = data["text"]
+    emotion = model.predict([text])[0]
+    return jsonify({
+        "emotion": emotion,
+        "name": content.EMOTIONS[emotion]["name"],
+        "emoji": content.EMOTIONS[emotion]["emoji"],
+    })
+
+@app.route("/api/message", methods=["post"])
+def api_message():
+    if "user_id" not in session:
+        return jsonify({"error": "Please log in."}), 401
+    chosen = request.get_json()["chosen"]
+    return jsonify({"message": content.EMOTIONS[chosen]["message"]})
+
+@app.route("/api/save", methods=["post"])
+def api_save():
+    if "user_id" not in session:
+       return jsonify({"error": "Please log in."}), 401
+    data = request.get_json()
+    database.save_checkin(session["user_id"], data["text"], data["predicted"], data["chosen"])
+    return jsonify({"ok": True})   
+
 if __name__ == "__main__":
     app.run(debug=True, port=5002)
