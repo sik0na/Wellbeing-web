@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import CheckIn from "./CheckIn.jsx"
-
+import History from "./History"
 
 function App(){
   const [loggedIn, setLoggedIn] = useState(null)
@@ -52,6 +52,8 @@ function App(){
     <div>
       <h1>How are you today?</h1>
       <CheckIn/>
+      <History/>
+      <button onClick={logout}>Log out</button>
       <button onClick={logout}>Log out</button>
     </div>
   )
