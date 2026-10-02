@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
-export default function History() {
+export default function History({ savedCount }) {
     const [checkins, setCheckins] = useState([])
 
     useEffect(() => {
         fetch("/api/history").then((response) => response.json())
         .then((data) => setCheckins(data.checkins))
 
-    }, [])
+    }, [savedCount])
 
     return (
         <div>

@@ -8,6 +8,7 @@ function App(){
   const[username, setUsername] = useState("")
   const[password, setPassword] = useState("")
   const[error, setError] = useState("")
+  const [savedCount, setSavedCount] = useState(0)
 
 
   useEffect(()=>{
@@ -51,8 +52,8 @@ function App(){
   return (
     <div>
       <h1>How are you today?</h1>
-      <CheckIn/>
-      <History/>
+      <CheckIn onSaved = {() => setSavedCount(savedCount + 1)}/>
+      <History savedCount = {savedCount}/>
       <button onClick={logout}>Log out</button>
       <button onClick={logout}>Log out</button>
     </div>

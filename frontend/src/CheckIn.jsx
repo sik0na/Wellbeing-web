@@ -1,5 +1,6 @@
 import { useState } from "react"
 
+
 async function post(url, data) {
     const response = await fetch(url, {
         method: "Post",
@@ -9,7 +10,7 @@ async function post(url, data) {
     return response.json()
 }
 
-export default function Checkin() {
+export default function Checkin({ onSaved }) {
     const [text, setText] = useState("")
     const [suggestion, setSuggestion] = useState(null)
     const [message, setMessage] = useState("")
@@ -28,6 +29,7 @@ export default function Checkin() {
     async function save() {
         await post("/api/save", {text, predicted: suggestion.emotion, chosen: suggestion.emotion})
         setSaved(true)
+        onSaved()
     }
     return (
         <div>
