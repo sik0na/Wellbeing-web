@@ -2,10 +2,14 @@ from flask import Flask, render_template, request, redirect, session, jsonify
 import joblib
 import content
 import database
+from sentence_transformers import SentenceTransformer
 
-
-model = joblib.load("emotion_model.joblib")
-
+encoder = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
+classifier = joblib.load("emotion_model_multi.joblib")
+def predict_emotion(text):
+    numbers = encoder.encode([text], normalize_embeddings=True)
+    return str(classifier.predict(numbers)[0])
+    
 database.create_tables()
 
 app = Flask(__name__)
@@ -28,7 +32,7 @@ def checkin():
     if "user_id" not in session:
         return redirect("/login")
     text = request.form["text"]
-    emotion = model.predict([text])[0]
+    emotion = predict_emotion(text)
     return render_template("result.html", text=text, emotion=emotion, emotions=content.EMOTIONS)
 
 @app.route("/message", methods = ["POST"])
@@ -107,7 +111,7 @@ def api_checkin():
         return jsonify({"error": "Please log in."}), 401
     data = request.get_json()
     text = data["text"]
-    emotion = model.predict([text])[0]
+    emotion = predict_emotion(text)
     return jsonify({
         "emotion": emotion,
         "name": content.EMOTIONS[emotion]["name"],
