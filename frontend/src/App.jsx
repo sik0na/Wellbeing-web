@@ -55,9 +55,8 @@ function App(){
       <CheckIn onSaved = {() => setSavedCount(savedCount + 1)}/>
       <History savedCount = {savedCount}/>
       <button onClick={logout}>Log out</button>
-      <button onClick={logout}>Log out</button>
     </div>
   )
 }
 
-export default App
+export default Ap

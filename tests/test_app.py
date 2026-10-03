@@ -80,3 +80,12 @@ def test_api_login(client):
     response = client.post("/api/login", json = {"username":"anna", "password":"sunflower123"})
     assert response.status_code==200
 
+def test_api_emotions(client):
+    assert client.get("/api/emotions").status_code == 401
+    client.post("/api/signup", json = {"username":"anna", "password":"sunflower123"})
+    data = client.get("/api/emotions").get_json()
+
+    keys = [emotion["key"] for emotion in data["emotions"]]
+    assert len(keys) == 7
+    assert "worried" in keys
+    assert data["emotions"][0]["emoji"] == "😟"

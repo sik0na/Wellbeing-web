@@ -40,7 +40,7 @@ export default function Checkin({ onSaved }) {
             </form>
             {suggestion && !message && (
                 <div>
-                    <p>Does "{suggestion.emoji} {suggestion.name}" fir how you feel?</p>
+                    <p>Does "{suggestion.emoji} {suggestion.name}" fit how you feel?</p>
                     <button onClick={confirm}>Yes, that fits</button>
                 </div>
             )}

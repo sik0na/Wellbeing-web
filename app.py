@@ -162,5 +162,18 @@ def api_me():
         return jsonify({"logged_in": False})
     return jsonify({"logged_in": True})
 
+@app.route("/api/emotions")
+def api_emotions():
+    if "user_id" not in session:
+        return jsonify({"error": "Please log in."}), 401
+    emotions = []
+    for key in content.EMOTIONS:
+        emotions.append({
+            "key": key,
+            "name": content.EMOTIONS[key]["name"],
+            "emoji": content.EMOTIONS[key]["emoji"],
+        })
+    return jsonify({"emotions": emotions})
+
 if __name__ == "__main__":
     app.run(debug=True, port=5002)
