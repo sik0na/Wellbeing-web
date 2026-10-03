@@ -16,39 +16,33 @@ def client(tmp_path, monkeypatch):
     return app_module.app.test_client()
 
 
-def test_pages_need_login(client):
-    response = client.get("/history")
-    assert response.status_code == 302                  
-    assert "/login" in response.headers["Location"]
+def test_api_needs_login(client):
+    assert client.get("/api/history").status_code == 401
+    assert client.get("/api/emotions").status_code == 401
+    assert client.post("/api/checkin", json={"text": "hello"}).status_code == 401
+    assert client.post("/api/save", json={"text": "x", "predicted": "sad", "chosen": "sad"}).status_code == 401
 
-
-def test_sign_up_and_log_in(client):
-    client.post("/signup", data={"username": "anna", "password": "sunflower123"})
-    assert client.get("/history").status_code == 200  
 
 def test_students_only_see_their_own_check_ins(client):
-    client.post("/signup", data={"username": "anna", "password": "sunflower123"})
-    client.post("/save", data={"text": "anna secret", "predicted": "sad", "chosen": "sad"})
+    client.post("/api/signup", json={"username": "anna", "password": "sunflower123"})
+    client.post("/api/save", json={"text": "anna secret", "predicted": "sad", "chosen": "sad"})
 
-    client.get("/logout")
-    client.post("/signup", data={"username": "ben", "password": "helloworld123"})
+    client.post("/api/logout")
+    client.post("/api/signup", json={"username": "ben", "password": "helloworld123"})
 
-    page = client.get("/history").data.decode()
-    assert "anna secret" not in page  
+    data = client.get("/api/history").get_json()
+    assert data["checkins"] == []                        # Ben sees nothing of Anna's
+
 
 def test_api_history(client):
-    assert client.get("/api/history").status_code == 401
-
-    client.post("/signup", data={"username": "anna", "password": "sunflower123"})
-    client.post("/save", data={"text": "exam tomorrow", "predicted": "worried", "chosen": "worried"})
+    client.post("/api/signup", json={"username": "anna", "password": "sunflower123"})
+    client.post("/api/save", json={"text": "exam tomorrow", "predicted": "worried", "chosen": "worried"})
 
     data = client.get("/api/history").get_json()
     assert data["checkins"][0]["text"] == "exam tomorrow"
 
 def test_api_checkin_flow(client):
-    assert client.get("/api/history").status_code == 401
-
-    client.post("/signup", data={"username": "anna", "password": "sunflower123"})
+    client.post("/api/signup", json={"username": "anna", "password": "sunflower123"})
 
     response = client.post("/api/checkin", json={"text": "I'm so worried about my exam tomorrow"})
     assert response.get_json()["emotion"] == "worried"
@@ -121,11 +115,6 @@ def test_every_emotion_is_translated():
             assert emotion["name"] in translations.TRANSLATIONS[lang]
             assert emotion["message"] in translations.TRANSLATIONS[lang]
 
-def test_every_emotion_is_translated():
-    for emotion in content.EMOTIONS.values():
-        for lang in ["hu", "mn"]:
-            assert emotion["name"] in translations.TRANSLATIONS[lang]
-            assert emotion["message"] in translations.TRANSLATIONS[lang]
     
 def test_api_calendar(client):
     assert client.get("/api/calendar/2026/10").status_code == 401
@@ -148,5 +137,29 @@ def test_api_calendar(client):
     assert client.get("/api/calendar/2026/13").status_code == 400
 
 
-    
-    
+def test_api_signup_checks(client):
+    response = client.post("/api/signup", json={"username": "al", "password": "sunflower123"})
+    assert response.status_code == 400                  # username too short
+
+    response = client.post("/api/signup", json={"username": "anna", "password": "short"})
+    assert response.status_code == 400                  # password too short
+
+    assert client.post("/api/signup", json={"username": "anna", "password": "sunflower123"}).status_code == 200
+    client.post("/api/logout")
+    response = client.post("/api/signup", json={"username": "anna", "password": "sunflower123"})
+    assert response.status_code == 400                  # username taken
+
+
+def test_unknown_api_address_gives_json_404(client):
+    response = client.get("/api/nothing-here")
+    assert response.status_code == 404
+    assert response.get_json()["error"] == "Not found."
+
+
+def test_react_app_is_served(client):
+    if not os.path.exists(os.path.join(app_module.REACT_FOLDER, "index.html")):
+        pytest.skip("run 'npm run build' in frontend/ first")
+    for address in ["/", "/some/page"]:                 # every page address gets the React app
+        response = client.get(address)
+        assert response.status_code == 200
+        assert b'<div id="root">' in response.data

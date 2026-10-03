@@ -1,8 +1,11 @@
+import os
 import sqlite3
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
-DB_FILE = "wellbeing.db"
+# On your laptop: wellbeing.db next to this file.
+# On a server: the DB_FILE environment variable says where to keep it.
+DB_FILE = os.environ.get("DB_FILE", os.path.join(os.path.dirname(os.path.abspath(__file__)), "wellbeing.db"))
 
 def get_connection():
     conn = sqlite3.connect(DB_FILE)

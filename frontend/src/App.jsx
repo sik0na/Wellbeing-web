@@ -10,6 +10,7 @@ function App(){
   const[password, setPassword] = useState("")
   const[error, setError] = useState("")
   const [savedCount, setSavedCount] = useState(0)
+  const [mode, setMode] = useState("login")   // the form: "login" or "signup"
 
   const [lang, setLang] = useState(localStorage.getItem("lang") || "en")
   const [texts, setTexts] = useState({})
@@ -33,9 +34,10 @@ function App(){
     }
     return result
   }
+  // The same form logs in OR signs up, depending on mode
   async function login(event) {
     event.preventDefault()
-    const response = await fetch("/api/login", {
+    const response = await fetch(mode === "login" ? "/api/login" : "/api/signup", {
       method:"post",
       headers: {"Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -64,21 +66,30 @@ function App(){
   if (loggedIn === null) return <p>Loading...</p>
 
   if (!loggedIn){
+    const isLogin = mode === "login"
     return (
     <form onSubmit={login}>
-            {languageButtons}
-      <h1>{t("Log in")}</h1>
-      {error && <p style={{color: "red"}}>{error}</p>}
+      {languageButtons}
+      <h1>{isLogin ? t("Log in") : t("Sign up")}</h1>
+      {error && <p style={{color: "red"}}>{t(error)}</p>}
       <input placeholder={t("Username")} value={username} onChange={(e) => setUsername(e.target.value)}/>
       <input placeholder={t("Password")} type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-      <button type="submit">{t("Log in")}</button>
+      <button type="submit">{isLogin ? t("Log in") : t("Sign up")}</button>
+
+      {/* switch between the two forms */}
+      <p>
+        {isLogin ? t("No account yet?") : t("Already have an account?")}{" "}
+        <button type="button" onClick={() => { setMode(isLogin ? "signup" : "login"); setError("") }}>
+          {isLogin ? t("Sign up") : t("Log in")}
+        </button>
+      </p>
     </form>
     )
   }
 
   return (
     <div>
-            {languageButtons}
+      {languageButtons}
       <h1>{t("How are you today?")}</h1>
       <Chat t={t} lang={lang} onSaved = {() => setSavedCount(savedCount + 1)}/>
       <Calendar t={t} lang={lang} savedCount={savedCount} />

@@ -1,94 +1,38 @@
-from flask import Flask, render_template, request, redirect, session, jsonify
+# app.py - the backend: a Flask REST API (/api/...) that also serves the built React app.
+#
+# Run on your laptop:   python app.py          (http://127.0.0.1:5002)
+# Run on a server:      gunicorn app:app       (see Dockerfile)
+
+import os
+import calendar
+from flask import Flask, request, session, jsonify, send_from_directory
 import joblib
+from sentence_transformers import SentenceTransformer
 import content
 import database
-from sentence_transformers import SentenceTransformer
 import translations
-import calendar
 
-encoder = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
-classifier = joblib.load("emotion_model_multi.joblib")
+# The folder of this file, so files are found from any folder (also in tests/)
+HERE = os.path.dirname(os.path.abspath(__file__))
+# Where "npm run build" puts the finished React app
+REACT_FOLDER = os.path.join(HERE, "frontend", "dist")
+
+# device="cpu": servers have no graphics card, and on a Mac the graphics chip crashes inside gunicorn
+encoder = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2", device="cpu")
+classifier = joblib.load(os.path.join(HERE, "emotion_model_multi.joblib"))
+
 def predict_emotion(text):
     numbers = encoder.encode([text], normalize_embeddings=True)
     return str(classifier.predict(numbers)[0])
-    
+
 database.create_tables()
 
-app = Flask(__name__)
-app.secret_key = "dev-secret-change-me"
+# static_folder=None: we serve the React files ourselves (see react_app at the bottom)
+app = Flask(__name__, static_folder=None)
+# The secret key signs the login cookie. On the server it comes from an environment
+# variable, so the real key is never on GitHub.
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-me")
 
-
-@app.route("/")
-def home():
-    if "user_id" not in session:
-        return redirect("/login")
-    return render_template("home.html")
-
-
-@app.route("/about")
-def about():
-    return render_template("about.html")
-
-@app.route("/checkin", methods = ["POST"])
-def checkin():
-    if "user_id" not in session:
-        return redirect("/login")
-    text = request.form["text"]
-    emotion = predict_emotion(text)
-    return render_template("result.html", text=text, emotion=emotion, emotions=content.EMOTIONS)
-
-@app.route("/message", methods = ["POST"])
-def message():
-    if "user_id" not in session:
-            return redirect("/login")
-    chosen=request.form["chosen"]
-    text = request.form["text"]
-    predicted = request.form["predicted"]
-    return render_template("message.html", emotion=content.EMOTIONS[chosen],
-                        text = text, predicted=predicted, chosen=chosen)
-
-@app.route("/save", methods = ["POST"])
-def save():
-    if "user_id" not in session:
-            return redirect("/login")
-    database.save_checkin(session["user_id"], request.form["text"],
-                          request.form["predicted"], request.form["chosen"])
-    return redirect("/history")
-
-
-@app.route("/history")
-def history():
-    if "user_id" not in session:
-            return redirect("/login")
-    return render_template("history.html",
-                           checkins=database.get_all_checkins(session["user_id"]), emotions=content.EMOTIONS)
-
-
-@app.route("/signup", methods = ["GET", "POST"])
-def signup():
-    if request.method == "POST":
-        user_id = database.create_user(request.form["username"], request.form["password"])
-        if user_id is None:
-            return render_template("signup.html", error="That username is already takem.")
-        session["user_id"] = user_id
-        return redirect("/")
-    return render_template("signup.html")
-
-
-@app.route("/login", methods = ["GET", "POST"])
-def login():
-    if request.method == "POST":
-        user = database.check_login(request.form["username"], request.form["password"])
-        if user is None:
-            return render_template("login.html", error = "Wrong username or password")
-        session["user_id"] = user["id"]
-        return redirect("/")
-    return render_template("login.html")
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect("/login")
 
 @app.route("/api/history")
 def api_history():
@@ -142,11 +86,17 @@ def api_save():
 @app.route("/api/signup", methods=["post"])
 def api_signup():
     data = request.get_json()
-    user_id=database.create_user(data["username"], data["password"])
+    username = data["username"].strip()      # " anna " -> "anna"
+    password = data["password"]
+    if len(username) < 3:
+        return jsonify({"error": "Username must be at least 3 characters."}), 400
+    if len(password) < 8:
+        return jsonify({"error": "Password must be at least 8 characters."}), 400
+    user_id = database.create_user(username, password)
     if user_id is None:
         return jsonify({"error": "That username is already taken."}), 400
     session["user_id"] = user_id
-    return jsonify({"username": data["username"]})
+    return jsonify({"username": username})
 
 @app.route("/api/login", methods = ["Post"])
 def api_login():
@@ -172,7 +122,7 @@ def api_me():
 def api_emotions():
     if "user_id" not in session:
         return jsonify({"error": "Please log in."}), 401
-    lang  = request.args.get(translations.translate("lang", "en"))
+    lang = request.args.get("lang", "en")   # from the address: /api/emotions?lang=hu
     emotions = []
     for key in content.EMOTIONS:
         emotions.append({
@@ -220,5 +170,22 @@ def api_calendar(year, month):
         weeks.append(days)
     return jsonify({"weeks": weeks})
 
+
+# ----- The React app -----
+# Every address that is not /api/... gets the React app (frontend/dist).
+# React then decides what to show. So only ONE server is needed.
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def react_app(path):
+    if path.startswith("api/"):
+        return jsonify({"error": "Not found."}), 404       # unknown API address
+    if not os.path.exists(os.path.join(REACT_FOLDER, "index.html")):
+        return "The React app is not built yet. Run: cd frontend && npm run build", 404
+    if path and os.path.isfile(os.path.join(REACT_FOLDER, path)):
+        return send_from_directory(REACT_FOLDER, path)      # a real file, e.g. assets/index-abc.js
+    return send_from_directory(REACT_FOLDER, "index.html")
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5002)
+
