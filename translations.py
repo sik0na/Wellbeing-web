@@ -65,6 +65,7 @@ ROWS = [
     ("Password must be at least 8 characters.", "A jelszónak legalább 8 karakterből kell állnia.", "Нууц үг дор хаяж 8 тэмдэгттэй байх ёстой."),
     ("That username is already taken.", "Ez a felhasználónév már foglalt.", "Энэ хэрэглэгчийн нэр бүртгэгдсэн байна."),
     ("Wrong username or password", "Hibás felhasználónév vagy jelszó", "Хэрэглэгчийн нэр эсвэл нууц үг буруу байна"),
+    ("A calm place to check in with yourself.", "Egy nyugodt hely, ahol ránézhetsz magadra.", "Өөрийгөө сонсох тайван орон зай."),
 ]
 
 TRANSLATIONS = {"hu": {}, "mn": {}}

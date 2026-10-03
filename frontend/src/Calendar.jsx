@@ -55,13 +55,13 @@ export default function Calendar({ t, lang, savedCount }) {
     const todayText = toText(today)
 
     return (
-        <div className="calendar">
+        <div className="card">
             <h2>{t("Your mood calendar")}</h2>
 
             <div className="calendar-header">
-                <button type="button" onClick={previousMonth} aria-label={t("Previous month")}>‹</button>
+                <button type="button" className="round-button secondary" onClick={previousMonth} aria-label={t("Previous month")}>‹</button>
                 <strong>{title}</strong>
-                <button type="button" onClick={nextMonth} aria-label={t("Next month")}>›</button>
+                <button type="button" className="round-button secondary" onClick={nextMonth} aria-label={t("Next month")}>›</button>
             </div>
 
             <div className="calendar-grid">

@@ -1,24 +1,35 @@
-import { useEffect, useState } from "react";
+// History.jsx - the student's own check-ins, newest first.
+// Each one has a round emoji in the soft colour of its mood.
+
+import { useEffect, useState } from "react"
 
 export default function History({ savedCount, t }) {
     const [checkins, setCheckins] = useState([])
 
+    // Load again after a new check-in was saved
     useEffect(() => {
-        fetch("/api/history").then((response) => response.json())
-        .then((data) => setCheckins(data.checkins))
-
+        fetch("/api/history")
+            .then((response) => response.json())
+            .then((data) => setCheckins(data.checkins))
     }, [savedCount])
 
     return (
-        <div>
+        <div className="card">
             <h2>{t("Your history")}</h2>
 
-            {checkins.map((c) => (
-                <p key={c.id}>
-                     {c.created_at} · {c.chosen}: {c.text}
-                </p>
-            ))}
-            {checkins.length === 0 && <p>{t("No check-ins yet.")}</p>}
+            {checkins.length === 0 && <p className="muted">{t("No check-ins yet.")}</p>}
+
+            <ul className="history-list">
+                {checkins.map((c) => (
+                    <li key={c.id}>
+                        <span className={"history-emoji mood-" + c.chosen}>{c.emoji}</span>
+                        <div>
+                            <p className="history-text">{c.text}</p>
+                            <span className="history-date">{c.created_at}</span>
+                        </div>
+                    </li>
+                ))}
+            </ul>
         </div>
     )
 }

@@ -1,270 +1,300 @@
+/* index.css - the design of the whole app.
+   Student-friendly look: soft purple, rounded cards, big emoji, and a dark mode
+   that follows the phone's setting.
+
+   All colours are variables at the top. Dark mode only changes the variables,
+   so the rest of the file doesn't need to know about it. */
+
+/* ========== Colours: light mode ========== */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --bg: #f8f5ff;
+  --card: #ffffff;
+  --surface: #f3effc;          /* inputs, chips, empty calendar days */
+  --surface-hover: #e9e2fb;
+  --text: #2b2540;
+  --muted: #6f6886;
+  --border: #e8e2f5;
+  --primary: #7c5cff;
+  --primary-dark: #6342ea;
+  --primary-soft: #eee8ff;
+  --on-primary: #ffffff;
+  --danger: #e5484d;
+  --shadow: 0 6px 20px rgba(80, 56, 170, 0.08);
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* one soft colour per emotion (for the calendar and history) */
+  --worried-soft: #fff0d4;
+  --sad-soft: #e2ecff;
+  --angry-soft: #ffe3e5;
+  --stressed-soft: #f3e5ff;
+  --lonely-soft: #d9f4f2;
+  --happy-soft: #fff6c7;
+  --calm-soft: #daf6eb;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  color-scheme: light;
 }
 
+/* ========== Colours: dark mode (when the phone or laptop is in dark mode) ========== */
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+    --bg: #14111c;
+    --card: #1f1a2b;
+    --surface: #2a2438;
+    --surface-hover: #352d47;
+    --text: #f2effa;
+    --muted: #a79fbd;
+    --border: #342c45;
+    --primary: #9d85ff;
+    --primary-dark: #b5a3ff;
+    --primary-soft: #2e2650;
+    --on-primary: #16121f;
+    --danger: #ff6b6f;
+    --shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    --worried-soft: #3d3016;
+    --sad-soft: #1d2a45;
+    --angry-soft: #421f25;
+    --stressed-soft: #34204a;
+    --lonely-soft: #15383a;
+    --happy-soft: #3a3312;
+    --calm-soft: #16392c;
+    color-scheme: dark;
   }
 }
+
+/* ========== Basics ========== */
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
+  font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
+h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.3px; margin: 0 0 12px; }
+h2 { font-size: 19px; font-weight: 800; margin: 0 0 12px; }
+
+main {
+  max-width: 560px;
+  margin: 8px auto 40px;
+  padding: 0 16px;              /* space at the sides on phones */
+}
+
+.loading { text-align: center; color: var(--muted); padding: 60px 0; }
+.error { color: var(--danger); font-weight: 700; }
+.muted { color: var(--muted); }
+
+/* ========== Top bar ========== */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
+.logo { font-weight: 800; font-size: 20px; }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* EN · HU · MN: one pill, the chosen language is white */
+.lang-switch {
+  display: inline-flex;
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
 }
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
+.lang-switch button {
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 3px 10px;
   margin: 0;
 }
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+.lang-switch button:hover { background: none; color: var(--text); }
+.lang-switch button.active {
+  background: var(--card);
+  color: var(--primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* ========== Cards ========== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
 }
 
-/* ----- Chat ----- */
-.chat { 
-  max-width: 480px; 
-  margin: 0 auto; 
-  text-align: left; 
+/* ========== Buttons ========== */
+button {
+  background: var(--primary);
+  color: var(--on-primary);
+  border: none;
+  border-radius: 999px;          /* pill shape */
+  padding: 10px 18px;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  margin: 4px 4px 4px 0;
+  transition: transform 0.1s, background 0.15s;
+}
+button:hover { background: var(--primary-dark); }
+button:active { transform: scale(0.97); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+button:disabled { opacity: 0.45; cursor: default; transform: none; }
+
+button.secondary { background: var(--surface); color: var(--text); }
+button.secondary:hover { background: var(--surface-hover); }
+.big-button { width: 100%; padding: 14px; font-size: 17px; margin: 6px 0 0; }
+.full-width { width: 100%; margin: 0; }
+
+.link-button {
+  background: none;
+  color: var(--primary);
+  padding: 0;
+  margin: 0;
+  text-decoration: underline;
+}
+.link-button:hover { background: none; color: var(--primary-dark); }
+
+/* ========== Text boxes ========== */
+input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;               /* 16px stops iPhones from zooming in */
+  margin-bottom: 12px;
+}
+input::placeholder { color: var(--muted); }
+input:focus { outline: none; border-color: var(--primary); background: var(--card); }
+
+/* ========== Log in / sign up ========== */
+.welcome { text-align: center; padding: 24px 0 8px; }
+.welcome-emojis { font-size: 44px; display: flex; justify-content: center; gap: 8px; }
+.welcome-emojis span { display: inline-block; animation: float 3s ease-in-out infinite; }
+.welcome-emojis span:nth-child(2) { animation-delay: 0.4s; font-size: 54px; }
+.welcome-emojis span:nth-child(3) { animation-delay: 0.8s; }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.welcome-text { font-weight: 700; color: var(--muted); margin: 6px auto 0; max-width: 300px; }
+.auth-card { margin-top: 12px; }
+.switch-text { text-align: center; color: var(--muted); margin: 14px 0 0; }
+
+/* ========== Home ========== */
+.hello { margin: 12px 4px 14px; font-size: 28px; }
+
+/* ========== Chat ========== */
+.chat-log { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.bubble {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 20px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;       /* long words don't break the layout */
+}
+.bubble.bot { align-self: flex-start; background: var(--surface); border-bottom-left-radius: 6px; }
+.bubble.user {
+  align-self: flex-end;
+  background: var(--primary);
+  color: var(--on-primary);
+  border-bottom-right-radius: 6px;
+  font-weight: 600;
 }
 
-.chat-log { 
+/* the card with emotion buttons, and the save card */
+.choices { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.choices p { width: 100%; margin: 6px 0 0; font-size: 14px; font-weight: 700; color: var(--muted); }
+.choices button { margin: 0; }
+.choices button.choice {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-size: 14px;
+  padding: 7px 12px;
+}
+.choices button.choice:hover { background: var(--surface-hover); }
+
+/* message box + round send button */
+.chat-input { display: flex; gap: 8px; align-items: center; }
+.chat-input input { margin: 0; border-radius: 24px; padding: 12px 16px; }
+.send-button {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
   display: flex;
-  flex-direction: column; 
-  gap: 8px; 
-  margin-bottom: 12px; 
-}
-
-
-.bubble { 
-  max-width: 80%; 
-  padding: 10px 14px; 
-  border-radius: 18px; 
-  line-height: 1.4; 
-}
-
-
-.bubble.bot { 
-  align-self: flex-start; 
-  background: #ece8ff; 
-  color: #2d2440; 
-  border-bottom-left-radius: 4px; 
-}
-
-
-.bubble.user { 
-  align-self: flex-end; 
-  background: #7c5cff; 
-  color: white; 
-  border-bottom-right-radius: 4px; 
-}
-
-.chat-card { 
-  align-self: flex-start; 
-  display: flex; 
-  flex-wrap: wrap; 
-  gap: 6px; 
-  align-items: center; 
-}
-
-.chat-card p {
-  width: 100%; 
-  margin: 4px 0 0; 
-  font-size: 0.9em; 
-}
-
-.chat-card button:disabled { 
-  opacity: 0.4; 
-  cursor: default; 
-}
-
-.chat-input { 
-  display: flex; 
-  gap: 8px; 
-}
-
-.chat-input input { 
-  flex: 1; 
-  padding: 10px; 
-  border-radius: 12px; border: 1px solid #ccc; 
-}
-
-.language-buttons { 
-  display: flex; 
-  justify-content: flex-end; 
-  gap: 4px; 
-}
-.language-buttons button:disabled { 
-  background: #7c5cff; 
-  color: white; 
-  opacity: 1; 
-}
-
-/* ----- Mood calendar ----- */
-.calendar { 
-  max-width: 480px; 
-  margin: 24px auto; 
-}
-
-.calendar-header { 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  margin-bottom: 8px; 
-}
-
-.calendar-grid { 
-  display: grid; 
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 4px; 
-
-}
-
-
-.weekday { 
-  font-size: 0.75em; 
-  opacity: 0.7; 
-  text-align: center; 
-}
-
-
-.day { 
-  aspect-ratio: 1; 
-  border-radius: 10px; 
-  display: flex; 
-  flex-direction: column; 
   align-items: center;
-  padding-top: 4px; 
-  background: rgba(127, 127, 127, 0.12); 
-  font-size: 0.8em; 
+  justify-content: center;
 }
 
+/* ========== Mood calendar ========== */
+.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.calendar-header strong { font-size: 17px; }
+.round-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));   /* 7 equal columns that may shrink on phones */
+  gap: 4px;
+}
+.weekday { font-size: 12px; font-weight: 800; color: var(--muted); text-align: center; }
+.day {
+  aspect-ratio: 1;               /* square boxes */
+  border-radius: 12px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 3px;
+}
+.day-number { font-size: 11px; font-weight: 800; color: var(--muted); }
+.day-emoji { font-size: 18px; line-height: 1.2; }
+.day.today { box-shadow: inset 0 0 0 2px var(--primary); }
 
-.day-emoji { 
-  font-size: 1.3em; 
-}
+/* one soft colour per mood (used by the calendar AND the history) */
+.mood-worried  { background: var(--worried-soft); }
+.mood-sad      { background: var(--sad-soft); }
+.mood-angry    { background: var(--angry-soft); }
+.mood-stressed { background: var(--stressed-soft); }
+.mood-lonely   { background: var(--lonely-soft); }
+.mood-happy    { background: var(--happy-soft); }
+.mood-calm     { background: var(--calm-soft); }
 
-.day.today { 
-  outline: 2px solid #7c5cff; 
-
+/* ========== History ========== */
+.history-list { list-style: none; padding: 0; margin: 0; }
+.history-list li { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--border); }
+.history-list li:first-child { border-top: none; padding-top: 0; }
+.history-emoji {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
 }
-/* one colour per mood (dark text so it is readable on the light colours) */
-.mood-worried  { 
-  background: #ffe08a; 
-  color: #2d2440; 
-}
-
-.mood-sad      { 
-  background: #9ec5ff; 
-  color: #2d2440; 
-}
-
-.mood-angry    { 
-  background: #ff9c9c; 
-  color: #2d2440; 
-}
-.mood-stressed { 
-  background: #ffc48a; 
-  color: #2d2440; 
-}
-.mood-lonely   { 
-  background: #c9b6ff; 
-  color: #2d2440; 
-}
-.mood-happy    { 
-  background: #a8e6a1; 
-  color: #2d2440; 
-}
-.mood-calm     { 
-  background: #a6e3e9; 
-  color: #2d2440; 
-}
+.history-text { margin: 0; overflow-wrap: anywhere; }
+.history-date { font-size: 13px; color: var(--muted); font-weight: 700; }

@@ -47,6 +47,7 @@ def api_history():
             "created_at": row["created_at"],
             "text": row["text"],
             "chosen": row["chosen"],
+            "emoji": content.EMOTIONS[row["chosen"]]["emoji"],   # for the round emoji in the history
         })
     return jsonify({"checkins": checkins})
 

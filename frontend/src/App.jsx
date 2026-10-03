@@ -55,47 +55,69 @@ function App(){
     setLoggedIn(false)
   }
 
+  // The EN · HU · MN switch: one pill, the chosen language is "active"
   const languageButtons = (
-    <div className="language-buttons">
-      <button type="button" onClick={() => setLang("en")} disabled={lang === "en"}>EN</button>
-      <button type="button" onClick={() => setLang("hu")} disabled={lang === "hu"}>HU</button>
-      <button type="button" onClick={() => setLang("mn")} disabled={lang === "mn"}>MN</button>
+    <div className="lang-switch">
+      {["en", "hu", "mn"].map((code) => (
+        <button key={code} type="button" className={lang === code ? "active" : ""} onClick={() => setLang(code)}>
+          {code.toUpperCase()}
+        </button>
+      ))}
     </div>
   )
 
-  if (loggedIn === null) return <p>Loading...</p>
+  // The bar at the top of every screen
+  const topbar = (
+    <header className="topbar">
+      <span className="logo">🫧 Pause</span>
+      {languageButtons}
+    </header>
+  )
+
+  if (loggedIn === null) return <p className="loading">Loading…</p>
 
   if (!loggedIn){
     const isLogin = mode === "login"
     return (
-    <form onSubmit={login}>
-      {languageButtons}
-      <h1>{isLogin ? t("Log in") : t("Sign up")}</h1>
-      {error && <p style={{color: "red"}}>{t(error)}</p>}
-      <input placeholder={t("Username")} value={username} onChange={(e) => setUsername(e.target.value)}/>
-      <input placeholder={t("Password")} type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-      <button type="submit">{isLogin ? t("Log in") : t("Sign up")}</button>
+      <>
+        {topbar}
+        <main>
+          <div className="welcome">
+            <div className="welcome-emojis"><span>😌</span><span>🫧</span><span>😊</span></div>
+            <p className="welcome-text">{t("A calm place to check in with yourself.")}</p>
+          </div>
 
-      {/* switch between the two forms */}
-      <p>
-        {isLogin ? t("No account yet?") : t("Already have an account?")}{" "}
-        <button type="button" onClick={() => { setMode(isLogin ? "signup" : "login"); setError("") }}>
-          {isLogin ? t("Sign up") : t("Log in")}
-        </button>
-      </p>
-    </form>
+          <form className="card auth-card" onSubmit={login}>
+            <h1>{isLogin ? t("Log in") : t("Sign up")}</h1>
+            {error && <p className="error">{t(error)}</p>}
+            <input placeholder={t("Username")} value={username} onChange={(e) => setUsername(e.target.value)}/>
+            <input placeholder={t("Password")} type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+            <button type="submit" className="big-button">{isLogin ? t("Log in") : t("Sign up")}</button>
+
+            {/* switch between the two forms */}
+            <p className="switch-text">
+              {isLogin ? t("No account yet?") : t("Already have an account?")}{" "}
+              <button type="button" className="link-button" onClick={() => { setMode(isLogin ? "signup" : "login"); setError("") }}>
+                {isLogin ? t("Sign up") : t("Log in")}
+              </button>
+            </p>
+          </form>
+        </main>
+      </>
     )
   }
 
   return (
-    <div>
-      {languageButtons}
-      <h1>{t("How are you today?")}</h1>
-      <Chat t={t} lang={lang} onSaved = {() => setSavedCount(savedCount + 1)}/>
-      <Calendar t={t} lang={lang} savedCount={savedCount} />
-      <History t={t} savedCount = {savedCount}/>
-      <button onClick={logout}>{t("Log out")}</button>
-    </div>
+    <>
+      {topbar}
+      <main>
+        <h1 className="hello">{t("How are you today?")}</h1>
+        <Chat t={t} lang={lang} onSaved = {() => setSavedCount(savedCount + 1)}/>
+        <Calendar t={t} lang={lang} savedCount={savedCount} />
+        <History t={t} savedCount = {savedCount}/>
+        <button className="secondary full-width" onClick={logout}>{t("Log out")}</button>
+      </main>
+    </>
   )
 }
 
