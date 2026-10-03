@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import CheckIn from "./CheckIn.jsx"
 import History from "./History"
+import Chat from "./Chat.jsx"
 
 function App(){
   const [loggedIn, setLoggedIn] = useState(null)
@@ -52,7 +52,7 @@ function App(){
   return (
     <div>
       <h1>How are you today?</h1>
-      <CheckIn onSaved = {() => setSavedCount(savedCount + 1)}/>
+      <Chat onSaved = {() => setSavedCount(savedCount + 1)}/>
       <History savedCount = {savedCount}/>
       <button onClick={logout}>Log out</button>
     </div>

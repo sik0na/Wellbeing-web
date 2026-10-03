@@ -109,3 +109,71 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* ----- Chat ----- */
+.chat { 
+  max-width: 480px; 
+  margin: 0 auto; 
+  text-align: left; 
+}
+
+.chat-log { 
+  display: flex;
+  flex-direction: column; 
+  gap: 8px; 
+  margin-bottom: 12px; 
+}
+
+
+.bubble { 
+  max-width: 80%; 
+  padding: 10px 14px; 
+  border-radius: 18px; 
+  line-height: 1.4; 
+}
+
+
+.bubble.bot { 
+  align-self: flex-start; 
+  background: #ece8ff; 
+  color: #2d2440; 
+  border-bottom-left-radius: 4px; 
+}
+
+
+.bubble.user { 
+  align-self: flex-end; 
+  background: #7c5cff; 
+  color: white; 
+  border-bottom-right-radius: 4px; 
+}
+
+.chat-card { 
+  align-self: flex-start; 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 6px; 
+  align-items: center; 
+}
+
+.chat-card p {
+  width: 100%; 
+  margin: 4px 0 0; 
+  font-size: 0.9em; 
+}
+
+.chat-card button:disabled { 
+  opacity: 0.4; 
+  cursor: default; 
+}
+
+.chat-input { 
+  display: flex; 
+  gap: 8px; 
+}
+
+.chat-input input { 
+  flex: 1; 
+  padding: 10px; 
+  border-radius: 12px; border: 1px solid #ccc; 
+}
