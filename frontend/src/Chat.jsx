@@ -127,6 +127,6 @@ function Message({ message, emotions, onChoose, onSave, onSkip }) {
         )
     }
 
-    
+    const text = message.from === "bot" ? t(message.text, message.values) : message.text
     return <div className={"bubble " + message.from}>{message.text}</div>
 }

@@ -177,3 +177,13 @@ code {
   padding: 10px; 
   border-radius: 12px; border: 1px solid #ccc; 
 }
+
+.language-buttons { 
+  display: flex; 
+  justify-content: flex-end; 
+  gap: 4px; 
+}
+.language-buttons button:disabled { 
+  background: #7c5cff; 
+  color: white; 
+  opacity: 1; }

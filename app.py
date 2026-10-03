@@ -3,6 +3,7 @@ import joblib
 import content
 import database
 from sentence_transformers import SentenceTransformer
+import translations
 
 encoder = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
 classifier = joblib.load("emotion_model_multi.joblib")
@@ -174,6 +175,12 @@ def api_emotions():
             "emoji": content.EMOTIONS[key]["emoji"],
         })
     return jsonify({"emotions": emotions})
+
+@app.route("/api/translations/<lang>")
+def api_translations(lang):
+    if lang not in translations.LANGUAGES:
+        return jsonify({"error": "Language not supported."}), 404
+    return jsonify({"texts": translations.TRANSLATIONS.get(lang, {})})
 
 if __name__ == "__main__":
     app.run(debug=True, port=5002)

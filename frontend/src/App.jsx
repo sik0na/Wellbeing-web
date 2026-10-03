@@ -10,12 +10,28 @@ function App(){
   const[error, setError] = useState("")
   const [savedCount, setSavedCount] = useState(0)
 
+  const [lang, setLang] = useState(localStorage.getItem("lang") || "en")
+  const [texts, setTexts] = useState({})
 
   useEffect(()=>{
     fetch("/api/me").then((response) => response.json())
     .then((data) => setLoggedIn(data.logged_in))
   }, [])
 
+  useEffect(() => {
+    fetch("/api/translations/" + lang)
+    .then((response) => response.json())
+    .then((data) => setTexts(data.texts))
+    localStorage.setItem("lang", lang)
+  })
+
+  function t(text, values = {}) {
+    let result = texts[text] || text
+    for (const key in values) {
+      result = result.replace("{" + key + "}", values[key])
+    }
+    return result
+  }
   async function login(event) {
     event.preventDefault()
     const response = await fetch("/api/login", {
@@ -35,6 +51,15 @@ function App(){
     await fetch("/api/logout", {method: "post"})
     setLoggedIn(false)
   }
+
+  const languageButtons = (
+    <div className="language-buttons">
+      <button type="button" onClick={() => setLang("en")} disabled={lang === "en"}>EN</button>
+      <button type="button" onClick={() => setLang("hu")} disabled={lang === "hu"}>HU</button>
+      <button type="button" onClick={() => setLang("mn")} disabled={lang === "mn"}>MN</button>
+    </div>
+  )
+
   if (loggedIn === null) return <p>Loading...</p>
 
   if (!loggedIn){

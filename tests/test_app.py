@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
 import pytest
 import database
 import app as app_module
-
+import translations
 
 @pytest.fixture
 def client(tmp_path, monkeypatch):
@@ -89,3 +89,18 @@ def test_api_emotions(client):
     assert len(keys) == 7
     assert "worried" in keys
     assert data["emotions"][0]["emoji"] == "😟"
+
+def test_translations(client):
+    data= client.get("/api/translations/hu").get_json()
+    assert data["texts"]["Log in"] == "Bejelentkezés"
+
+    data= client.get("/api/translations/en").get_json()
+    assert data["texts"] == {}
+
+    assert client.get("/api/translations/xx").status_code == 404
+
+def test_every_row_has_three_languages():
+    for row in translations.ROWS:
+        assert len(row) == 3
+        for text in row:
+            assert text.strip() != ""
