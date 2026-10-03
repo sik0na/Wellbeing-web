@@ -6,6 +6,7 @@ import database
 import app as app_module
 import translations
 import content
+from datetime import datetime
 
 @pytest.fixture
 def client(tmp_path, monkeypatch):
@@ -126,6 +127,26 @@ def test_every_emotion_is_translated():
             assert emotion["name"] in translations.TRANSLATIONS[lang]
             assert emotion["message"] in translations.TRANSLATIONS[lang]
     
+def test_api_calendar(client):
+    assert client.get("/api/calendar/2026/10").status_code == 401
+
+    client.post("/api/signup", json = {"username":"anna", "password": "sunflower123"})
+    client.post("/api/save", json = {"text": "exam soon", "predicted": "worried", "chosen": "worried"})
+    client.post("/api/save", json = {"text": "better now", "predicted": "calm", "chosen": "calm"})
+
+    today = datetime.now()
+    data = client.get(f"/api/calendar/{today.year}/{today.month}").get_json()
+    assert len(data["weeks"]) <= 6                      # a month never has more than 6 weeks
+
+    days = [day for week in data["weeks"] for day in week if day is not None]
+    assert days[0]["number"]== 1
+
+    todays_box = [day for day in days if day["number"] == today.day][0]
+    assert todays_box["emotion"] == "calm"
+
+    assert todays_box["emoji"] == "😌"
+    assert client.get("/api/calendar/2026/13").status_code == 400
+
 
     
     

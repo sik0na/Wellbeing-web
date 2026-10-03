@@ -4,6 +4,7 @@ import content
 import database
 from sentence_transformers import SentenceTransformer
 import translations
+import calendar
 
 encoder = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
 classifier = joblib.load("emotion_model_multi.joblib")
@@ -186,6 +187,38 @@ def api_translations(lang):
     if lang not in translations.LANGUAGES:
         return jsonify({"error": "Language not supported."}), 404
     return jsonify({"texts": translations.TRANSLATIONS.get(lang, {})})
+
+@app.route("/api/calendar/<int:year>/<int:month>")
+def api_calendar(year, month):
+    if "user_id" not in session:
+        return jsonify({"error": "Please log in."}), 401
+    if month < 1 or month > 12:
+        return jsonify({"error": "Month must be 1-12."}), 400
+
+    moods = {}
+    for row in database.get_all_checkins(session["user_id"]):
+        day = row["created_at"][:10]
+        if day not in moods:
+            moods[day] = row["chosen"]
+
+    weeks = []
+    for week in calendar.monthcalendar(year, month):
+        days = []
+        for number in week:
+            if number == 0:
+                days.append(None)
+                continue
+            date = f"{year}-{month:02d}-{number:02d}"
+            emotion = moods.get(date)
+
+            days.append({
+                "number": number,
+                "date": date,
+                "emotion": emotion,
+                "emoji": content.EMOTIONS[emotion]["emoji"] if emotion else "",
+            })
+        weeks.append(days)
+    return jsonify({"weeks": weeks})
 
 if __name__ == "__main__":
     app.run(debug=True, port=5002)

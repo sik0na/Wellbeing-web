@@ -53,6 +53,9 @@ ROWS = [
     ("It's good to have a steady day. Enjoy the calm.",
      "Jó, ha egy nyugodt napod van. Élvezd a nyugalmat.",
      "Тайван өдөр байх сайхан. Энэ тайван байдлыг мэдэрч таашаагаарай."),
+    ("Your mood calendar", "Hangulatnaptár", "Таны сэтгэл санааны хуанли"),
+    ("Previous month", "Előző hónap", "Өмнөх сар"),
+    ("Next month", "Következő hónap", "Дараагийн сар"),
 ]
 
 TRANSLATIONS = {"hu": {}, "mn": {}}

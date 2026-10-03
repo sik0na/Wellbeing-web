@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import History from "./History"
 import Chat from "./Chat.jsx"
+import Calendar from "./Calendar.jsx"
 
 function App(){
   const [loggedIn, setLoggedIn] = useState(null)
@@ -80,6 +81,7 @@ function App(){
             {languageButtons}
       <h1>{t("How are you today?")}</h1>
       <Chat t={t} lang={lang} onSaved = {() => setSavedCount(savedCount + 1)}/>
+      <Calendar t={t} lang={lang} savedCount={savedCount} />
       <History t={t} savedCount = {savedCount}/>
       <button onClick={logout}>{t("Log out")}</button>
     </div>

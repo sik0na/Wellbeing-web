@@ -186,4 +186,85 @@ code {
 .language-buttons button:disabled { 
   background: #7c5cff; 
   color: white; 
-  opacity: 1; }
+  opacity: 1; 
+}
+
+/* ----- Mood calendar ----- */
+.calendar { 
+  max-width: 480px; 
+  margin: 24px auto; 
+}
+
+.calendar-header { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 8px; 
+}
+
+.calendar-grid { 
+  display: grid; 
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px; 
+
+}
+
+
+.weekday { 
+  font-size: 0.75em; 
+  opacity: 0.7; 
+  text-align: center; 
+}
+
+
+.day { 
+  aspect-ratio: 1; 
+  border-radius: 10px; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
+  padding-top: 4px; 
+  background: rgba(127, 127, 127, 0.12); 
+  font-size: 0.8em; 
+}
+
+
+.day-emoji { 
+  font-size: 1.3em; 
+}
+
+.day.today { 
+  outline: 2px solid #7c5cff; 
+
+}
+/* one colour per mood (dark text so it is readable on the light colours) */
+.mood-worried  { 
+  background: #ffe08a; 
+  color: #2d2440; 
+}
+
+.mood-sad      { 
+  background: #9ec5ff; 
+  color: #2d2440; 
+}
+
+.mood-angry    { 
+  background: #ff9c9c; 
+  color: #2d2440; 
+}
+.mood-stressed { 
+  background: #ffc48a; 
+  color: #2d2440; 
+}
+.mood-lonely   { 
+  background: #c9b6ff; 
+  color: #2d2440; 
+}
+.mood-happy    { 
+  background: #a8e6a1; 
+  color: #2d2440; 
+}
+.mood-calm     { 
+  background: #a6e3e9; 
+  color: #2d2440; 
+}
