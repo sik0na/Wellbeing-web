@@ -112,19 +112,23 @@ def api_checkin():
         return jsonify({"error": "Please log in."}), 401
     data = request.get_json()
     text = data["text"]
+    lang = data.get("lang", "en")
     emotion = predict_emotion(text)
     return jsonify({
         "emotion": emotion,
-        "name": content.EMOTIONS[emotion]["name"],
+        "name": translations.translate(content.EMOTIONS[emotion]["name"], lang),
         "emoji": content.EMOTIONS[emotion]["emoji"],
     })
 
-@app.route("/api/message", methods=["post"])
+@app.route("/api/message", methods=["post"]) 
 def api_message():
     if "user_id" not in session:
         return jsonify({"error": "Please log in."}), 401
-    chosen = request.get_json()["chosen"]
-    return jsonify({"message": content.EMOTIONS[chosen]["message"]})
+    data = request.get_json()
+    chosen = data["chosen"]
+    lang = data.get("lang", "en")
+    return jsonify({"message": translations.translate(content.EMOTIONS[chosen]["message"], lang)})
+    
 
 @app.route("/api/save", methods=["post"])
 def api_save():
@@ -167,11 +171,12 @@ def api_me():
 def api_emotions():
     if "user_id" not in session:
         return jsonify({"error": "Please log in."}), 401
+    lang  = request.args.get(translations.translate("lang", "en"))
     emotions = []
     for key in content.EMOTIONS:
         emotions.append({
             "key": key,
-            "name": content.EMOTIONS[key]["name"],
+            "name": translations.translate(content.EMOTIONS[key]["name"], lang),
             "emoji": content.EMOTIONS[key]["emoji"],
         })
     return jsonify({"emotions": emotions})

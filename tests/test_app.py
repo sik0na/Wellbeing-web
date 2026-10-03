@@ -1,6 +1,3 @@
-# test_app.py - automated tests for the wellbeing app.
-# Run them with:  python -m pytest
-
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # find app.py
 
@@ -8,6 +5,7 @@ import pytest
 import database
 import app as app_module
 import translations
+import content
 
 @pytest.fixture
 def client(tmp_path, monkeypatch):
@@ -104,3 +102,30 @@ def test_every_row_has_three_languages():
         assert len(row) == 3
         for text in row:
             assert text.strip() != ""
+
+def test_messages_in_the_students_language(client):
+    client.post("/api/signup", json = {"username":"anna", "password":"sunflower123"})
+    data = client.post("/api/message", json = {"chosen": "worried", "lang": "hu"}).get_json()
+    assert data["message"].startswith("Érthető")
+
+    data = client.get("/api/emotions?lang=mn").get_json()
+    assert data["emotions"][0]["name"] == "Айдас / санаа зоволт"
+
+    data = client.post("/api/message", json = {"chosen": "worried"}).get_json()
+    assert "worried" in data["message"]
+
+def test_every_emotion_is_translated():
+    for emotion in content.EMOTIONS.values():
+        for lang in ["hu", "mn"]:
+            assert emotion["name"] in translations.TRANSLATIONS[lang]
+            assert emotion["message"] in translations.TRANSLATIONS[lang]
+
+def test_every_emotion_is_translated():
+    for emotion in content.EMOTIONS.values():
+        for lang in ["hu", "mn"]:
+            assert emotion["name"] in translations.TRANSLATIONS[lang]
+            assert emotion["message"] in translations.TRANSLATIONS[lang]
+    
+
+    
+    
