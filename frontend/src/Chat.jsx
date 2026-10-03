@@ -13,7 +13,7 @@ async function post(url, data) {
 
 let nextId = 1   
 
-export default function Chat({ onSaved }) {
+export default function Chat({ onSaved, t, lang}) {
     const [messages, setMessages] = useState([
         { id: 0, from: "bot", text: "Hi! How are you feeling today?" },
     ])
@@ -23,10 +23,10 @@ export default function Chat({ onSaved }) {
 
     
     useEffect(() => {
-        fetch("/api/emotions")
+        fetch("/api/emotions?lang=" + lang)
             .then((response) => response.json())
             .then((data) => setEmotions(data.emotions))
-    }, [])
+    }, [lang])
 
     
     function add(...newMessages) {
@@ -47,10 +47,10 @@ export default function Chat({ onSaved }) {
 
         add({ from: "user", text })
         setInput("")
-        const answer = await post("/api/checkin", { text })
+        const answer = await post("/api/checkin", { text, lang})
         setCheckin({ text, predicted: answer.emotion })
         add(
-            { from: "bot", text: `Does "${answer.emoji} ${answer.name}" fit how you feel?` },
+                        { from: "bot", text: 'Does "{emotion}" fit how you feel?', values: { emotion: answer.emoji + " " + answer.name } },
             { type: "choices", suggestion: answer },
         )
     }
@@ -62,7 +62,7 @@ export default function Chat({ onSaved }) {
         add({ from: "user", text: emotion.emoji + " " + emotion.name })
         setCheckin((old) => ({ ...old, chosen: key }))
 
-        const data = await post("/api/message", { chosen: key })
+        const data = await post("/api/message", { chosen: key, lang})
         add(
             { from: "bot", text: data.message },
             { type: "save" },
@@ -86,29 +86,29 @@ export default function Chat({ onSaved }) {
         <div className="chat">
             <div className="chat-log">
                 {messages.map((m) => (
-                    <Message key={m.id} message={m} emotions={emotions}
+                    <Message key={m.id} message={m} emotions={emotions} t={t}
                              onChoose={choose} onSave={save} onSkip={skip} />
                 ))}
             </div>
 
             <form className="chat-input" onSubmit={send}>
-                <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type a message…" />
-                <button type="submit">Send</button>
+                <input value={input} onChange={(e) => setInput(e.target.value)} placeholder={t("Type a message…")} />
+                <button type="submit">{t("Send")}</button>
             </form>
         </div>
     )
 }
 
 
-function Message({ message, emotions, onChoose, onSave, onSkip }) {
+function Message({ message, emotions, t,  onChoose, onSave, onSkip }) {
     if (message.type === "choices") {
         const s = message.suggestion
         return (
             <div className="chat-card">
                 <button disabled={message.used} onClick={() => onChoose(s.emotion, message.id)}>
-                    ✓ Yes, {s.emoji} {s.name}
+                    <p>{t("Yes")}, {s.emoji} {s.name}</p>
                 </button>
-                <p>Or pick another:</p>
+                <p>{t("Or pick another:")}</p>
                 {emotions.filter((e) => e.key !== s.emotion).map((e) => (
                     <button key={e.key} disabled={message.used} onClick={() => onChoose(e.key, message.id)}>
                         {e.emoji} {e.name}
@@ -121,12 +121,12 @@ function Message({ message, emotions, onChoose, onSave, onSkip }) {
     if (message.type === "save") {
         return (
             <div className="chat-card">
-                <button disabled={message.used} onClick={() => onSave(message.id)}>Save this check-in</button>
-                <button disabled={message.used} onClick={() => onSkip(message.id)}>No thanks</button>
+                                <button disabled={message.used} onClick={() => onSave(message.id)}>{t("Save this check-in")}</button>
+                <button disabled={message.used} onClick={() => onSkip(message.id)}>{t("No thanks")}</button>
             </div>
         )
     }
 
-    const text = message.from === "bot" ? t(message.text, message.values) : message.text
-    return <div className={"bubble " + message.from}>{message.text}</div>
+        const text = message.from === "bot" ? t(message.text, message.values) : message.text
+    return <div className={"bubble " + message.from}>{text}</div>
 }

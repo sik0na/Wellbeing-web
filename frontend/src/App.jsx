@@ -23,7 +23,7 @@ function App(){
     .then((response) => response.json())
     .then((data) => setTexts(data.texts))
     localStorage.setItem("lang", lang)
-  })
+  }, [lang])
 
   function t(text, values = {}) {
     let result = texts[text] || text
@@ -65,21 +65,23 @@ function App(){
   if (!loggedIn){
     return (
     <form onSubmit={login}>
-      <h1>Log in</h1>
+            {languageButtons}
+      <h1>{t("Log in")}</h1>
       {error && <p style={{color: "red"}}>{error}</p>}
-      <input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/>
-      <input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-      <button type="submit">Log in</button>
+      <input placeholder={t("Username")} value={username} onChange={(e) => setUsername(e.target.value)}/>
+      <input placeholder={t("Password")} type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+      <button type="submit">{t("Log in")}</button>
     </form>
     )
   }
 
   return (
     <div>
-      <h1>How are you today?</h1>
-      <Chat onSaved = {() => setSavedCount(savedCount + 1)}/>
-      <History savedCount = {savedCount}/>
-      <button onClick={logout}>Log out</button>
+            {languageButtons}
+      <h1>{t("How are you today?")}</h1>
+      <Chat t={t} lang={lang} onSaved = {() => setSavedCount(savedCount + 1)}/>
+      <History t={t} savedCount = {savedCount}/>
+      <button onClick={logout}>{t("Log out")}</button>
     </div>
   )
 }
