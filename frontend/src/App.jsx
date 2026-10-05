@@ -66,10 +66,12 @@ function App(){
     </div>
   )
 
-  // The bar at the top of every screen
+  
   const topbar = (
     <header className="topbar">
-      <span className="logo">🫧 Pause</span>
+      <span className="logo">
+        <img src="/logo.png" alt="" className="logo-img"/>PAUSE
+      </span>
       {languageButtons}
     </header>
   )
@@ -82,9 +84,10 @@ function App(){
       <>
         {topbar}
         <main>
-          <div className="welcome">
-            <div className="welcome-emojis"><span>😌</span><span>🫧</span><span>😊</span></div>
-            <p className="welcome-text">{t("A calm place to check in with yourself.")}</p>
+          <div className="welcome-emojis" aria-hidden="true">
+            <span>
+              <img src="/logo.png" alt="" className="welcome-logo"/>
+            </span>
           </div>
 
           <form className="card auth-card" onSubmit={login}>

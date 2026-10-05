@@ -65,7 +65,15 @@ ROWS = [
     ("Password must be at least 8 characters.", "A jelszónak legalább 8 karakterből kell állnia.", "Нууц үг дор хаяж 8 тэмдэгттэй байх ёстой."),
     ("That username is already taken.", "Ez a felhasználónév már foglalt.", "Энэ хэрэглэгчийн нэр бүртгэгдсэн байна."),
     ("Wrong username or password", "Hibás felhasználónév vagy jelszó", "Хэрэглэгчийн нэр эсвэл нууц үг буруу байна"),
-    ("A calm place to check in with yourself.", "Egy nyugodt hely, ahol ránézhetsz magadra.", "Өөрийгөө сонсох тайван орон зай."),
+        ("Wellbeing", "Jóllét", "Сайн сайхан"),
+    ("Your little space to check in, breathe and keep going.",
+     "A kis helyed, ahol megállhatsz, levegőt vehetsz és továbbléphetsz.",
+     "Сэтгэлээ тэмдэглэж, амсхийж, урагшлах таны жижигхэн орон зай."),
+    ("Welcome back", "Üdv újra", "Тавтай морил"),
+    ("Create your account", "Hozd létre a fiókodat", "Бүртгэлээ үүсгээрэй"),
+    ("Your check-ins are private to your account.", "A bejegyzéseidet csak te látod.", "Таны тэмдэглэлийг зөвхөн та харна."),
+    ("New here?", "Új vagy itt?", "Анх удаа юу?"),
+    ("Create an account", "Fiók létrehozása", "Бүртгэл үүсгэх"),
 ]
 
 TRANSLATIONS = {"hu": {}, "mn": {}}
