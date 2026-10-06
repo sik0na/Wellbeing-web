@@ -1,16 +1,9 @@
-/* index.css - the design of the whole app.
-   Student-friendly look: soft purple, rounded cards, big emoji, and a dark mode
-   that follows the phone's setting.
 
-   All colours are variables at the top. Dark mode only changes the variables,
-   so the rest of the file doesn't need to know about it. */
-
-/* ========== Colours: light mode ========== */
 :root {
   --bg: #f8f5ff;
   --card: #ffffff;
-  --surface: #f3effc;          /* inputs, chips, empty calendar days */
-  --surface-hover: #e9e2fb;
+  --surface: #f3effc;  
+  --surface-hover: #e9e2fb;       
   --text: #2b2540;
   --muted: #6f6886;
   --border: #e8e2f5;
@@ -21,7 +14,7 @@
   --danger: #e5484d;
   --shadow: 0 6px 20px rgba(80, 56, 170, 0.08);
 
-  /* one soft colour per emotion (for the calendar and history) */
+  
   --worried-soft: #fff0d4;
   --sad-soft: #e2ecff;
   --angry-soft: #ffe3e5;
@@ -33,7 +26,7 @@
   color-scheme: light;
 }
 
-/* ========== Colours: dark mode (when the phone or laptop is in dark mode) ========== */
+
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #14111c;
@@ -60,7 +53,7 @@
   }
 }
 
-/* ========== Basics ========== */
+
 * { box-sizing: border-box; }
 
 body {
@@ -72,20 +65,43 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.3px; margin: 0 0 12px; }
-h2 { font-size: 19px; font-weight: 800; margin: 0 0 12px; }
+h1 { 
+  font-size: 26px; 
+  font-weight: 800; 
+  letter-spacing: -0.3px; 
+  margin: 0 0 12px; 
+}
+
+
+h2 { 
+  font-size: 19px; 
+  font-weight: 800; 
+  margin: 0 0 12px; 
+
+}
 
 main {
   max-width: 560px;
   margin: 8px auto 40px;
-  padding: 0 16px;              /* space at the sides on phones */
+  padding: 0 16px;             
 }
 
-.loading { text-align: center; color: var(--muted); padding: 60px 0; }
-.error { color: var(--danger); font-weight: 700; }
-.muted { color: var(--muted); }
+.loading { 
+  text-align: center; 
+  color: var(--muted); 
+  padding: 60px 0; 
+}
 
-/* ========== Top bar ========== */
+.error { 
+  color: var(--danger); 
+  font-weight: 700; 
+}
+
+.muted { 
+  color: var(--muted); 
+}
+
+
 .topbar {
   position: sticky;
   top: 0;
@@ -115,7 +131,7 @@ main {
   width: 60px;
   height: 60px
 }
-/* EN · HU · MN: one pill, the chosen language is white */
+
 .lang-switch {
   display: inline-flex;
   background: var(--surface);
@@ -130,14 +146,19 @@ main {
   padding: 3px 10px;
   margin: 0;
 }
-.lang-switch button:hover { background: none; color: var(--text); }
+
+.lang-switch button:hover { 
+  background: none; 
+  color: var(--text); 
+}
+
 .lang-switch button.active {
   background: var(--card);
   color: var(--primary);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
-/* ========== Cards ========== */
+
 .card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -147,12 +168,12 @@ main {
   box-shadow: var(--shadow);
 }
 
-/* ========== Buttons ========== */
+
 button {
   background: var(--primary);
   color: var(--on-primary);
   border: none;
-  border-radius: 999px;          /* pill shape */
+  border-radius: 999px;         
   padding: 10px 18px;
   font: inherit;
   font-weight: 800;
@@ -160,15 +181,45 @@ button {
   margin: 4px 4px 4px 0;
   transition: transform 0.1s, background 0.15s;
 }
-button:hover { background: var(--primary-dark); }
-button:active { transform: scale(0.97); }
-button:focus-visible, input:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
-button:disabled { opacity: 0.45; cursor: default; transform: none; }
+button:hover { 
+  background: var(--primary-dark); 
+}
 
-button.secondary { background: var(--surface); color: var(--text); }
-button.secondary:hover { background: var(--surface-hover); }
-.big-button { width: 100%; padding: 14px; font-size: 17px; margin: 6px 0 0; }
-.full-width { width: 100%; margin: 0; }
+button:active { 
+  transform: scale(0.97); 
+}
+
+button:focus-visible, input:focus-visible { 
+  outline: 3px solid var(--primary); 
+  outline-offset: 2px; 
+}
+
+button:disabled { 
+  opacity: 0.45; 
+  cursor: default; 
+  transform: none; 
+}
+
+button.secondary { 
+  background: var(--surface); 
+  color: var(--text); 
+}
+
+button.secondary:hover { 
+  background: var(--surface-hover); 
+}
+
+.big-button { 
+  width: 100%; 
+  padding: 14px; 
+  font-size: 17px; 
+  margin: 6px 0 0; 
+}
+
+.full-width { 
+  width: 100%; 
+  margin: 0; 
+}
 
 .link-button {
   background: none;
@@ -177,9 +228,13 @@ button.secondary:hover { background: var(--surface-hover); }
   margin: 0;
   text-decoration: underline;
 }
-.link-button:hover { background: none; color: var(--primary-dark); }
 
-/* ========== Text boxes ========== */
+.link-button:hover { 
+  background: none; 
+  color: var(--primary-dark); 
+}
+
+
 input {
   width: 100%;
   padding: 12px 14px;
@@ -188,39 +243,103 @@ input {
   background: var(--surface);
   color: var(--text);
   font: inherit;
-  font-size: 16px;               /* 16px stops iPhones from zooming in */
+  font-size: 16px;              
   margin-bottom: 12px;
 }
-input::placeholder { color: var(--muted); }
-input:focus { outline: none; border-color: var(--primary); background: var(--card); }
+input::placeholder { 
+  color: var(--muted); 
+}
+label{
+  display: block;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
 
-/* ========== Log in / sign up ========== */
-.welcome { text-align: center; padding: 24px 0 8px; }
-.welcome-emojis { font-size: 44px; display: flex; justify-content: center; gap: 8px; }
-.welcome-emojis span { display: inline-block; animation: float 3s ease-in-out infinite; }
-.welcome-emojis span:nth-child(2) { animation-delay: 0.4s; font-size: 54px; }
-.welcome-emojis span:nth-child(3) { animation-delay: 0.8s; }
+
+
+input:focus { 
+  outline: none; 
+  border-color: var(--primary); 
+  background: var(--card); 
+}
+
+
+.welcome { 
+  text-align: center; 
+  padding: 24px 0 8px; 
+}
+.welcome-emojis { 
+  font-size: 44px; 
+  display: flex; 
+  justify-content: 
+  center; 
+  gap: 8px; 
+}
+
+.welcome-emojis span { 
+  display: inline-block; 
+  animation: float 3s ease-in-out infinite; 
+}
+
+.welcome-emojis span:nth-child(2) { 
+  animation-delay: 0.4s; 
+  font-size: 54px; 
+}
+
+.welcome-emojis span:nth-child(3) { 
+  animation-delay: 0.8s; 
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
 }
-.welcome-text { font-weight: 700; color: var(--muted); margin: 6px auto 0; max-width: 300px; }
-.auth-card { margin-top: 12px; }
-.switch-text { text-align: center; color: var(--muted); margin: 14px 0 0; }
+.welcome-text { 
+  font-weight: 700; 
+  color: var(--muted); 
+  margin: 6px auto 0; 
+  max-width: 300px; 
+}
 
-/* ========== Home ========== */
-.hello { margin: 12px 4px 14px; font-size: 28px; }
+.auth-card { 
+  margin-top: 12px; 
+}
+.switch-text { 
+  font-size: 14px;
+  margin: 14px 0 0;
+}
 
-/* ========== Chat ========== */
-.chat-log { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.switch-text .link-button{
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.hello { 
+  margin: 12px 4px 14px; 
+  font-size: 28px; 
+}
+
+
+.chat-log { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+  margin-bottom: 12px; 
+}
+
 .bubble {
   max-width: 85%;
   padding: 10px 14px;
   border-radius: 20px;
   line-height: 1.45;
-  overflow-wrap: anywhere;       /* long words don't break the layout */
+  overflow-wrap: anywhere;      
 }
-.bubble.bot { align-self: flex-start; background: var(--surface); border-bottom-left-radius: 6px; }
+.bubble.bot { 
+  align-self: flex-start; 
+  background: var(--surface); 
+  border-bottom-left-radius: 6px; 
+}
 .bubble.user {
   align-self: flex-end;
   background: var(--primary);
@@ -229,10 +348,26 @@ input:focus { outline: none; border-color: var(--primary); background: var(--car
   font-weight: 600;
 }
 
-/* the card with emotion buttons, and the save card */
-.choices { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-.choices p { width: 100%; margin: 6px 0 0; font-size: 14px; font-weight: 700; color: var(--muted); }
-.choices button { margin: 0; }
+
+.choices { 
+  display: flex; 
+  flex-wrap: wrap; 
+  align-items: center; 
+  gap: 6px; 
+}
+
+.choices p { 
+  width: 100%; 
+  margin: 6px 0 0; 
+  font-size: 14px; 
+  font-weight: 700; 
+  color: var(--muted); 
+}
+
+.choices button { 
+  margin: 0; 
+}
+
 .choices button.choice {
   background: var(--card);
   color: var(--text);
@@ -240,11 +375,23 @@ input:focus { outline: none; border-color: var(--primary); background: var(--car
   font-size: 14px;
   padding: 7px 12px;
 }
-.choices button.choice:hover { background: var(--surface-hover); }
+.choices button.choice:hover { 
+  background: var(--surface-hover); 
+}
 
-/* message box + round send button */
-.chat-input { display: flex; gap: 8px; align-items: center; }
-.chat-input input { margin: 0; border-radius: 24px; padding: 12px 16px; }
+
+.chat-input { 
+  display: flex; 
+  gap: 8px; 
+  align-items: center; 
+}
+
+.chat-input input { 
+  margin: 0; 
+  border-radius: 24px; 
+  padding: 12px 16px; 
+}
+
 .send-button {
   flex-shrink: 0;
   width: 48px;
@@ -257,9 +404,16 @@ input:focus { outline: none; border-color: var(--primary); background: var(--car
   justify-content: center;
 }
 
-/* ========== Mood calendar ========== */
-.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.calendar-header strong { font-size: 17px; }
+
+.calendar-header { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-bottom: 8px; 
+}
+.calendar-header strong { 
+  font-size: 17px; 
+}
 .round-button {
   width: 36px;
   height: 36px;
@@ -271,12 +425,17 @@ input:focus { outline: none; border-color: var(--primary); background: var(--car
 }
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));   /* 7 equal columns that may shrink on phones */
-  gap: 4px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;  
 }
-.weekday { font-size: 12px; font-weight: 800; color: var(--muted); text-align: center; }
+.weekday { 
+  font-size: 12px; 
+  font-weight: 800; 
+  color: var(--muted); 
+  text-align: center; 
+}
 .day {
-  aspect-ratio: 1;               /* square boxes */
+  aspect-ratio: 1;              
   border-radius: 12px;
   background: var(--surface);
   display: flex;
@@ -284,23 +443,63 @@ input:focus { outline: none; border-color: var(--primary); background: var(--car
   align-items: center;
   padding-top: 3px;
 }
-.day-number { font-size: 11px; font-weight: 800; color: var(--muted); }
-.day-emoji { font-size: 18px; line-height: 1.2; }
-.day.today { box-shadow: inset 0 0 0 2px var(--primary); }
+.day-number { 
+  font-size: 11px; 
+  font-weight: 800; 
+  color: var(--muted); 
+}
 
-/* one soft colour per mood (used by the calendar AND the history) */
-.mood-worried  { background: var(--worried-soft); }
-.mood-sad      { background: var(--sad-soft); }
-.mood-angry    { background: var(--angry-soft); }
-.mood-stressed { background: var(--stressed-soft); }
-.mood-lonely   { background: var(--lonely-soft); }
-.mood-happy    { background: var(--happy-soft); }
-.mood-calm     { background: var(--calm-soft); }
+.day-emoji { 
+  font-size: 18px; 
+  line-height: 1.2; 
+}
+.day.today { 
+  box-shadow: inset 0 0 0 2px var(--primary); 
+}
 
-/* ========== History ========== */
-.history-list { list-style: none; padding: 0; margin: 0; }
-.history-list li { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--border); }
-.history-list li:first-child { border-top: none; padding-top: 0; }
+
+.mood-worried  { 
+  background: var(--worried-soft);
+}
+.mood-sad      { 
+  background: var(--sad-soft); 
+}
+.mood-angry    { 
+  background: var(--angry-soft); 
+}
+.mood-stressed { 
+  background: var(--stressed-soft); 
+}
+.mood-lonely   { 
+  background: var(--lonely-soft); 
+}
+.mood-happy    { 
+  background: var(--happy-soft); 
+}
+.mood-calm     { 
+  background: var(--calm-soft); 
+}
+
+
+.history-list { 
+  list-style: none; 
+  padding: 0; 
+  margin: 0; 
+}
+
+.history-list li { 
+  display: flex; 
+  gap: 12px; 
+  align-items: flex-start; 
+  padding: 10px 0; 
+  border-top: 1px solid var(--border); 
+}
+
+.history-list li:first-child { 
+  border-top: none; 
+  padding-top: 0; 
+}
+
 .history-emoji {
   flex-shrink: 0;
   width: 40px;
@@ -311,5 +510,12 @@ input:focus { outline: none; border-color: var(--primary); background: var(--car
   justify-content: center;
   font-size: 20px;
 }
-.history-text { margin: 0; overflow-wrap: anywhere; }
-.history-date { font-size: 13px; color: var(--muted); font-weight: 700; }
+.history-text { 
+  margin: 0; 
+  overflow-wrap: anywhere; 
+}
+.history-date { 
+  font-size: 13px; 
+  color: var(--muted); 
+  font-weight: 700; 
+}

@@ -91,18 +91,20 @@ function App(){
           </div>
 
           <form className="card auth-card" onSubmit={login}>
-            <h1>{isLogin ? t("Log in") : t("Sign up")}</h1>
+            <h1>{isLogin ? t("Welcome back") : t("Create your account")}</h1>
+            <p className="muted">{t("Your check-ins are private to your account.")}</p>
             {error && <p className="error">{t(error)}</p>}
-            <input placeholder={t("Username")} value={username} onChange={(e) => setUsername(e.target.value)}/>
-            <input placeholder={t("Password")} type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-            <button type="submit" className="big-button">{isLogin ? t("Log in") : t("Sign up")}</button>
 
-            {/* switch between the two forms */}
-            <p className="switch-text">
-              {isLogin ? t("No account yet?") : t("Already have an account?")}{" "}
-              <button type="button" className="link-button" onClick={() => { setMode(isLogin ? "signup" : "login"); setError("") }}>
-                {isLogin ? t("Sign up") : t("Log in")}
-              </button>
+            <label htmlFor="username">{t("Username")}</label>
+            <input id="username" value={username} autoComplete="username" onChange={(e)=>setUsername(e.target.value)} />
+            <label htmlFor="password">{t("Password")}</label>
+            <input id="password" type="password" value={password}
+                autoComplete={isLogin ? "current-password" : "new-password"}
+                onChange={(e) => setPassword(e.target.value)} />
+            <button type="submit">{isLogin ? t("Log in") : t("Sign up")}</button>
+
+            <p className="switch-text">{isLogin ? t("New here?") : t("Already have an account?")}{" "}
+              <button type="button" className="link-button" onClick={()=> {setMode(isLogin ? "signup" : "login") ; setError("") }}>{isLogin ? t("Create an account") : t("Log in")}</button>
             </p>
           </form>
         </main>
