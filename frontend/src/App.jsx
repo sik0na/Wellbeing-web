@@ -3,6 +3,15 @@ import History from "./History"
 import Chat from "./Chat.jsx"
 import Calendar from "./Calendar.jsx"
 
+const PAGES = ["home", "calendar", "habits", "activities", "profile"]
+const PAGE_NAMES = {
+  home: "Home",
+  calendar: "Calendar",
+  habits: "Activites",
+  activities: "Activities",
+  profile: "Profile",
+}
+
 function App(){
   const [loggedIn, setLoggedIn] = useState(null)
 
@@ -10,8 +19,8 @@ function App(){
   const[password, setPassword] = useState("")
   const[error, setError] = useState("")
   const [savedCount, setSavedCount] = useState(0)
-  const [mode, setMode] = useState("login")   // the form: "login" or "signup"
-
+  const [mode, setMode] = useState("login")  
+  const [page, setPage] = useState("home")    
   const [lang, setLang] = useState(localStorage.getItem("lang") || "en")
   const [texts, setTexts] = useState({})
 
@@ -34,7 +43,7 @@ function App(){
     }
     return result
   }
-  // The same form logs in OR signs up, depending on mode
+  
   async function login(event) {
     event.preventDefault()
     const response = await fetch(mode === "login" ? "/api/login" : "/api/signup", {
@@ -53,9 +62,10 @@ function App(){
   async function logout() {
     await fetch("/api/logout", {method: "post"})
     setLoggedIn(false)
+    setPage("home")
   }
 
-  // The EN · HU · MN switch: one pill, the chosen language is "active"
+  
   const languageButtons = (
     <div className="lang-switch">
       {["en", "hu", "mn"].map((code) => (
@@ -112,16 +122,48 @@ function App(){
     )
   }
 
-  return (
+    return (
     <>
       {topbar}
       <main>
-        <h1 className="hello">{t("How are you today?")}</h1>
-        <Chat t={t} lang={lang} onSaved = {() => setSavedCount(savedCount + 1)}/>
-        <Calendar t={t} lang={lang} savedCount={savedCount} />
-        <History t={t} savedCount = {savedCount}/>
-        <button className="secondary full-width" onClick={logout}>{t("Log out")}</button>
+
+        {page === "home" && (
+          <>
+            <h1 className="hello">{t("How are you today?")}</h1>
+            <Chat t={t} lang={lang} onSaved={() => setSavedCount(savedCount + 1)} />
+          </>
+        )}
+
+        {page === "calendar" && (
+          <>
+            <Calendar t={t} lang={lang} savedCount={savedCount} />
+            <History t={t} savedCount={savedCount} />
+          </>
+        )}
+
+        {(page === "habits" || page === "activities") && (
+          <div className="card">
+            <h2>{t(PAGE_NAMES[page])}</h2>
+            <p className="muted">{t("Coming soon")} 🌱</p>
+          </div>
+        )}
+
+        {page === "profile" && (
+          <div className="card">
+            <h2>{t("Profile")}</h2>
+            <button className="secondary full-width" onClick={logout}>{t("Log out")}</button>
+          </div>
+        )}
       </main>
+
+      
+      <nav>
+        {PAGES.map((name) => (
+          <button key={name} type="button" className={page === name ? "" : "secondary"} onClick={() => setPage(name)}>
+            {t(PAGE_NAMES[name])}
+          </button>
+        ))}
+      </nav>
     </>
   )
 }
